@@ -1,8 +1,39 @@
 cmake_minimum_required(VERSION 3.15)
-project(sudoku)
+project(sudoku VERSION 0.1)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(projectTarget sudoku)
+set(testTarget sudoku_test)
+
+find_package(Qt5 REQUIRED COMPONENTS Core Quick)
+
+add_executable(
+    ${projectTarget}
+    src/qml.qrc
+    src/main.cpp
+
+    src/matrix.cpp
+    src/matrix.h
+    src/matrix_shuffler.cpp
+    src/matrix_shuffler.h
+    src/matrix_item.cpp
+    src/matrix_item.h
+)
+
+target_link_libraries(${projectTarget} PRIVATE Qt5::Core Qt5::Quick)
+#set_target_properties(${projectTarget} PROPERTIES WIN32_EXECUTABLE TRUE)
+
+install(TARGETS ${projectTarget}
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 
 include(FetchContent)
@@ -14,23 +45,14 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-set(projectTarget sudoku)
-set(testTarget sudoku_test)
-
-add_executable(
-    ${projectTarget}
-    src/main.cpp 
-    src/matrix.cpp 
-    src/matrix_item.cpp 
-    src/matrix_shuffler.cpp
-)
-
 add_executable(
     ${testTarget}
-    src/matrix.cpp 
-    src/matrix_item.cpp 
+    src/matrix.cpp
+    src/matrix.h
+    src/matrix_item.cpp
+    src/matrix_item.h
     src/matrix_shuffler.cpp
-    
+    src/matrix_shuffler.h
     test/matrix_item_test.cpp
     test/matrix_test.cpp
 )
