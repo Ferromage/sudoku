@@ -12,15 +12,28 @@ int GameModel::rowCount(const QModelIndex&) const {
 }
 
 QVariant GameModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || role != Qt::DisplayRole) {
-        return QVariant();
+    if (!index.isValid() || index.row() >= static_cast<int>(m_data.size())) {
+        return {};
     }
 
-//    if (index.row() < 0 || index.row() >= (int)m_data.size()) {
-//        return QVariant();
-//    }
+    const auto& cell = m_data.at(index.row());
+    switch (role) {
+        case Roles::ValueRole :
+            return cell.m_value;
+        break;
+        case Roles::AttributeRole :
+            return cell.m_attr;
+        break;
+    }
 
-    return 6;
+    return {};
+}
+
+QHash<int,QByteArray> GameModel::roleNames() const {
+    QHash<int, QByteArray> table;
+    table[Roles::ValueRole] = "value";
+    table[Roles::AttributeRole] = "attribute";
+    return table;
 }
 
 int GameModel::dimension() const {

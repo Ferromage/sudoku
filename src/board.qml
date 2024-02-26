@@ -22,7 +22,14 @@ GridView {
         Cell {
             id: _cell
             anchors.fill: parent
-            text: display
+            text: value
+            textColor: {
+                if (attribute === "user") {
+                    return _cell.userTextColor
+                } else { // "generated"
+                    return _cell.defaultTextColor
+                }
+            }
             color: _model.position === index ? backSelectedColor : backColor
 
             MouseArea {

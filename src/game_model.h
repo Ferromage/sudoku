@@ -16,6 +16,7 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QHash<int,QByteArray> roleNames() const override;
 
     int dimension() const;
 
@@ -27,6 +28,16 @@ signals:
     void positionChanged();
 
 private:
+    enum Roles {
+        ValueRole = Qt::UserRole + 1,
+        AttributeRole
+    };
+
+    struct Data {
+        QString m_value = "7";
+        QString m_attr = "user"; //"user", "generated", "hidden"
+    };
+
     std::optional<int> m_currentPosition;
-    std::vector<int> m_data;
+    std::vector<Data> m_data;
 };
