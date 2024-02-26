@@ -6,9 +6,11 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: "Sudoku"
+    title: "Sudoku"    
 
     Board {
+        id: _board
         anchors.fill: parent
+        anchors.margins: 10
     }
 }

@@ -2,12 +2,19 @@ import QtQuick 2.15
 
 Rectangle {
     id: _tile
-    color: "white"
+
     property alias text: _text.text
+
+    readonly property color borderColor: "grey"
+    readonly property color borderBoldColor: "green"
+    readonly property color backColor: "white"
+    readonly property color backSelectedColor: "#52a459"
+
+    color: backColor
 
     border {
         width: 1
-        color: "grey"
+        color: borderColor
     }
 
     Text {

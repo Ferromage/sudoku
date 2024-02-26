@@ -3,6 +3,7 @@ import game_cxx_model 1.0
 
 GridView {
     id: _view
+    focus: true
 
     model: GameCxxModel {
         id: _model
@@ -10,6 +11,8 @@ GridView {
 
     cellWidth: width / _model.dimension
     cellHeight: height / _model.dimension
+
+    Keys.onPressed: _model.handleKey(event.key)
 
     delegate: Item {
         width: cellWidth
@@ -20,12 +23,13 @@ GridView {
             id: _cell
             anchors.fill: parent
             text: display
+            color: _model.position === index ? backSelectedColor : backColor
 
             MouseArea {
                 anchors.fill: parent
-                //onClicked: _model.move(index);
-                onClicked: {
-                    console.log(index)
+                onPressed: {
+                    _model.setPosition(index);
+                    //console.log(index)
                 }
             }
         }
@@ -34,10 +38,11 @@ GridView {
             id: _border
 
             visible: {index % 3 == 0}
-            color: "green" //_cell.border.color
+            color: _cell.borderBoldColor
             width: _cell.border.width * 4
-            height: _cell.height
+            height: _cell.height + 4
             x: -width / 2
+            y: -2
         }
 
         Rectangle {
@@ -48,8 +53,9 @@ GridView {
             }
             color: _border.color
             width: _border.width
-            height: _cell.height
+            height: _cell.height + 4
             x: _cell.width - width / 2
+            y: -2
         }
 
         Rectangle {

@@ -27,27 +27,45 @@ int GameModel::dimension() const {
     return 9;
 }
 
-//int GameModel::hiddenElement() const {
-//    return static_cast<int>(m_size);
-//}
+int GameModel::position() const {
+    return m_currentPosition ? m_currentPosition.value() : -1;
+}
 
-//Q_INVOKABLE void GameModel::move(int clickedPosition) {
-//    if (isMovable(clickedPosition)) {
-//        std::swap(m_data[m_hiddenElementPos], m_data[clickedPosition]);
-//        m_hiddenElementPos = clickedPosition;
-//        emit dataChanged(createIndex(0, 0), createIndex(m_data.size() - 1, 0));
-//    }
-//}
+Q_INVOKABLE void GameModel::setPosition(int position) {
+    if (0 <= position && position < (int)m_data.size()) {
+        if ((m_currentPosition && m_currentPosition.value() != position) || !m_currentPosition) {
+            m_currentPosition = position;
+            emit positionChanged();
+        }
+    }
+}
 
-//bool GameModel::isMovable(int pos) const {
-//    if (pos < 0 || pos >= (int)m_size || pos == m_hiddenElementPos) {
-//        return false;
-//    }
+Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
+    if (!m_currentPosition) {
+        m_currentPosition = 0;
+        emit positionChanged();
+        return;
+    }
 
-//    const bool isLeftPosFree = (pos % m_dimension) != 0 && (pos - 1) == m_hiddenElementPos;
-//    const bool isRightPosFree = ((pos + 1) % m_dimension) != 0 && (pos + 1) == m_hiddenElementPos;
-//    const bool isUpperPosFree = (pos - m_dimension) >= 0 && (pos - m_dimension) == m_hiddenElementPos;
-//    const bool isLowerPosFree = (pos + m_dimension) < m_size && (pos + m_dimension) == m_hiddenElementPos;
-
-//    return isLeftPosFree || isRightPosFree || isUpperPosFree || isLowerPosFree;
-//}
+    if (key == Qt::Key::Key_Up) {
+        if (m_currentPosition.value() - dimension() >= 0) {
+            m_currentPosition.value() -= dimension();
+            emit positionChanged();
+        }
+    } else if (key == Qt::Key::Key_Down) {
+        if (m_currentPosition.value() + dimension() < 81) {
+            m_currentPosition.value() += dimension();
+            emit positionChanged();
+        }
+    } else if (key == Qt::Key::Key_Left) {
+        if (m_currentPosition.value() % dimension() != 0) {
+            m_currentPosition.value() -= 1;
+            emit positionChanged();
+        }
+    } else if (key == Qt::Key::Key_Right) {
+        if ((m_currentPosition.value() + 1) % dimension() != 0) {
+            m_currentPosition.value() += 1;
+            emit positionChanged();
+        }
+    }
+}
