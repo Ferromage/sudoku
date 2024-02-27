@@ -24,9 +24,9 @@ GridView {
             anchors.fill: parent
             text: value
             textColor: {
-                if (attribute === "user") {
+                if (attribute === "user_setted") {
                     return _cell.userTextColor
-                } else { // "generated"
+                } else { // "generated" or "hidden"
                     return _cell.defaultTextColor
                 }
             }

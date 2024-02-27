@@ -12,6 +12,7 @@ public:
     Matrix();
     Matrix(const Matrix &rhs);
 
+    inline size_t size() const { return SIZE * SIZE; }
     inline size_t columns() const { return SIZE; }
     inline size_t rows() const { return SIZE; }
     inline size_t blocksInRow() const { return SIZE / 3; }

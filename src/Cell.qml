@@ -23,7 +23,7 @@ Rectangle {
     Text {
         id: _text
         anchors.centerIn: parent
-        text: "+"
+        text: ""
         color: defaultTextColor
         font {
             pointSize: Math.min(parent.width, parent.height) / 2

@@ -13,7 +13,7 @@ public:
     void shuffleAttributes(Matrix &matrix, DifficultLevel level);
 
 private:
-    static constexpr int actionCount = 100;
+    static constexpr int actionCount = 200;
     std::mt19937 m_randomGen;
 
     void transposeMatrix(Matrix &matrix);

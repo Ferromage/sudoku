@@ -1,5 +1,6 @@
 #pragma once
 
+#include "matrix.h"
 #include <QObject>
 #include <QAbstractListModel>
 #include <vector>
@@ -8,8 +9,7 @@
 class GameModel : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY(int dimension READ dimension CONSTANT)
-    Q_PROPERTY(int position READ position
-                            NOTIFY positionChanged)
+    Q_PROPERTY(int position READ position NOTIFY positionChanged)
 
 public:
     explicit GameModel(QObject *parent = nullptr);
@@ -28,16 +28,13 @@ signals:
     void positionChanged();
 
 private:
+    std::pair<size_t, size_t> convertPositionToMatrixCoordinates(int position) const;
+
     enum Roles {
         ValueRole = Qt::UserRole + 1,
         AttributeRole
     };
 
-    struct Data {
-        QString m_value = "7";
-        QString m_attr = "user"; //"user", "generated", "hidden"
-    };
-
     std::optional<int> m_currentPosition;
-    std::vector<Data> m_data;
+    Matrix m_data;
 };

@@ -1,10 +1,12 @@
 #include "game_model.h"
 #include <algorithm>
 #include <random>
+#include <cassert>
 #include <QDebug>
 
 GameModel::GameModel(QObject *parent) : QAbstractListModel(parent) {
-    m_data.resize(81);
+    m_data.reset();
+    m_data.shuffle(DifficultLevel::Easy);
 }
 
 int GameModel::rowCount(const QModelIndex&) const {
@@ -12,17 +14,26 @@ int GameModel::rowCount(const QModelIndex&) const {
 }
 
 QVariant GameModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || index.row() >= static_cast<int>(m_data.size())) {
+    if (!index.isValid() || index.row() >= rowCount()) {
         return {};
     }
 
-    const auto& cell = m_data.at(index.row());
+    const auto [row, col] = convertPositionToMatrixCoordinates(index.row());
+    const auto& item = m_data.getItem(row, col);
     switch (role) {
         case Roles::ValueRole :
-            return cell.m_value;
+            if (item.state() == MatrixItem::State::Hidden) {
+                return "";
+            }
+            return item.value();
         break;
         case Roles::AttributeRole :
-            return cell.m_attr;
+            if (item.state() == MatrixItem::State::Hidden) {
+                return "hidden";
+            } else if (item.state() == MatrixItem::State::Generated) {
+                return "generated";
+            }
+            return "user_setted";
         break;
     }
 
@@ -37,7 +48,8 @@ QHash<int,QByteArray> GameModel::roleNames() const {
 }
 
 int GameModel::dimension() const {
-    return 9;
+    assert(m_data.columns() == m_data.rows());
+    return m_data.columns();
 }
 
 int GameModel::position() const {
@@ -80,5 +92,19 @@ Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
             m_currentPosition.value() += 1;
             emit positionChanged();
         }
+    } else if (Qt::Key::Key_1 <= key && key <= Qt::Key::Key_9) {
+        const auto [row, col] = convertPositionToMatrixCoordinates(m_currentPosition.value());
+        auto& item = m_data.getItem(row, col);
+        if (item.state() != MatrixItem::State::Generated) {
+            item.setUserValue(key - Qt::Key::Key_0);
+            emit dataChanged(createIndex(m_currentPosition.value(), 0), createIndex(m_currentPosition.value(), 0));
+        }
     }
+}
+
+std::pair<size_t, size_t> GameModel::convertPositionToMatrixCoordinates(int position) const {
+    std::pair<size_t, size_t> result;
+    result.first = position / m_data.columns(); //row
+    result.second = position % m_data.rows(); //column
+    return result;
 }
