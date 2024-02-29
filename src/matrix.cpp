@@ -100,3 +100,14 @@ void Matrix::shuffle(DifficultLevel level) {
     m_shuffler.shuffleValues(*this);
     m_shuffler.shuffleAttributes(*this, level);
 }
+
+bool Matrix::isFilledByUser() const {
+    for (size_t row = 0; row < rows(); row++) {
+        for (size_t col = 0; col < columns(); col++) {
+            if (m_data[row][col].state() == MatrixItem::State::Hidden) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

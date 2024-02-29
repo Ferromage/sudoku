@@ -23,11 +23,14 @@ public:
     int position() const;
     Q_INVOKABLE void setPosition(int position);
     Q_INVOKABLE void handleKey(Qt::Key key);
+    Q_INVOKABLE void startNewGame(int level); //level: 0..2
 
 signals:
     void positionChanged();
 
 private:
+    enum class State {Idle, Game, GameOver};
+
     std::pair<size_t, size_t> convertPositionToMatrixCoordinates(int position) const;
 
     enum Roles {
@@ -37,4 +40,5 @@ private:
 
     std::optional<int> m_currentPosition;
     Matrix m_data;
+    State m_state;
 };

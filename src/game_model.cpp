@@ -5,8 +5,7 @@
 #include <QDebug>
 
 GameModel::GameModel(QObject *parent) : QAbstractListModel(parent) {
-    m_data.reset();
-    m_data.shuffle(DifficultLevel::Easy);
+    m_state = State::Idle;
 }
 
 int GameModel::rowCount(const QModelIndex&) const {
@@ -16,6 +15,9 @@ int GameModel::rowCount(const QModelIndex&) const {
 QVariant GameModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid() || index.row() >= rowCount()) {
         return {};
+    }
+    if (m_state == State::Idle) {
+        return "";
     }
 
     const auto [row, col] = convertPositionToMatrixCoordinates(index.row());
@@ -32,6 +34,12 @@ QVariant GameModel::data(const QModelIndex &index, int role) const {
                 return "hidden";
             } else if (item.state() == MatrixItem::State::Generated) {
                 return "generated";
+            } else if (m_state == State::GameOver) {
+                if (item.isGuessed()) {
+                    return "user_setted";
+                } else {
+                    return "user_wrong";
+                }
             }
             return "user_setted";
         break;
@@ -57,6 +65,10 @@ int GameModel::position() const {
 }
 
 Q_INVOKABLE void GameModel::setPosition(int position) {
+    if (m_state == State::Idle) {
+        return;
+    }
+
     if (0 <= position && position < (int)m_data.size()) {
         if ((m_currentPosition && m_currentPosition.value() != position) || !m_currentPosition) {
             m_currentPosition = position;
@@ -66,6 +78,12 @@ Q_INVOKABLE void GameModel::setPosition(int position) {
 }
 
 Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
+    qDebug() << key;
+
+    if (m_state == State::Idle) {
+        return;
+    }
+
     if (!m_currentPosition) {
         m_currentPosition = 0;
         emit positionChanged();
@@ -92,14 +110,30 @@ Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
             m_currentPosition.value() += 1;
             emit positionChanged();
         }
-    } else if (Qt::Key::Key_1 <= key && key <= Qt::Key::Key_9) {
+    } else if (Qt::Key::Key_1 <= key && key <= Qt::Key::Key_9 && m_state != State::GameOver) {
         const auto [row, col] = convertPositionToMatrixCoordinates(m_currentPosition.value());
         auto& item = m_data.getItem(row, col);
         if (item.state() != MatrixItem::State::Generated) {
             item.setUserValue(key - Qt::Key::Key_0);
-            emit dataChanged(createIndex(m_currentPosition.value(), 0), createIndex(m_currentPosition.value(), 0));
+            if (m_data.isFilledByUser()) {
+                m_state = State::GameOver;
+            }
+
+            if (m_state == State::GameOver) {
+                emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+            } else {
+                emit dataChanged(createIndex(m_currentPosition.value(), 0), createIndex(m_currentPosition.value(), 0));
+            }
         }
     }
+}
+
+Q_INVOKABLE void GameModel::startNewGame(int level) {
+    beginResetModel();
+    m_state = State::Game;
+    m_data.reset();
+    m_data.shuffle(static_cast<DifficultLevel>(level % 3));
+    endResetModel();
 }
 
 std::pair<size_t, size_t> GameModel::convertPositionToMatrixCoordinates(int position) const {

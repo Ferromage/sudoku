@@ -24,6 +24,7 @@ public:
     MatrixItem& getItem(size_t row, size_t column);
     void setItem(size_t row, size_t column, const MatrixItem& value);
     bool isValid() const;
+    bool isFilledByUser() const;
     void reset();
     void shuffle(DifficultLevel level);
 

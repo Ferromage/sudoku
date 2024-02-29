@@ -12,6 +12,7 @@ Rectangle {
     readonly property color backSelectedColor: "#b373bf78"
     readonly property color defaultTextColor: "grey"
     readonly property color userTextColor: "blue"
+    readonly property color userTextColorWrong: "red"
 
     color: backColor
 
