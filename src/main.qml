@@ -24,27 +24,44 @@ Window {
             Layout.minimumHeight: Math.min(Layout.preferredHeight, _root.height)
             Layout.fillHeight: true
             Layout.fillWidth: true
+
+            onGameOver: {
+                if (status) {
+                    _dialogGameOver.text = "Вы выиграли! Ваш результат: "
+                } else {
+                    _dialogGameOver.text = "Вы проиграли"
+                }
+                _dialogGameOver.visible = true
+            }
         }
 
         ControlPanel {
             id: _control
             onNewGame: {
                 if (_board.isGameInProgress) {
-                    _dialog.text = "Вы действительно хотите закончить<br>текущую игру и начать новую?"
+                    _dialogNewGame.text = "Вы действительно хотите закончить<br>текущую игру и начать новую?"
                 } else {
-                    _dialog.text = "Начать новую игру?"
+                    _dialogNewGame.text = "Начать новую игру?"
                 }
-                _dialog.visible = true
-            }
+                _dialogNewGame.visible = true
+            }            
         }
     }
 
     MessageDialog {
-        id: _dialog
+        id: _dialogNewGame
         visible: false
         modality: Qt.WindowModal
-        title: "Start new game"
+        title: "Начать новую игру"
         standardButtons: StandardButton.No | StandardButton.Yes
         onYes: _board.startNewGame(_control.level)
+    }
+
+    MessageDialog {
+        id: _dialogGameOver
+        visible: false
+        modality: Qt.WindowModal
+        title: "Игра окончена"
+        standardButtons: StandardButton.Ok
     }
 }

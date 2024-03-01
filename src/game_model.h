@@ -29,6 +29,7 @@ public:
 
 signals:
     void positionChanged();
+    void gameOver(bool isSuccess);
 
 private:
     enum class State {Idle, GameInProgress, GameOver};

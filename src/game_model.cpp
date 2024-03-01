@@ -82,8 +82,6 @@ Q_INVOKABLE void GameModel::setPosition(int position) {
 }
 
 Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
-    qDebug() << key;
-
     if (m_state == State::Idle) {
         return;
     }
@@ -125,6 +123,7 @@ Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
 
             if (m_state == State::GameOver) {
                 emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+                emit gameOver(m_data.isValid());
             } else {
                 emit dataChanged(createIndex(m_currentPosition.value(), 0), createIndex(m_currentPosition.value(), 0));
             }
@@ -134,6 +133,7 @@ Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
 
 Q_INVOKABLE void GameModel::startNewGame(int level) {
     beginResetModel();
+    m_currentPosition.reset();
     m_state = State::GameInProgress;
     m_data.reset();
     m_data.shuffle(static_cast<DifficultLevel>(level % 3));

@@ -9,6 +9,7 @@ Rectangle {
     }
 
     property alias isGameInProgress: _model.isGameInProgress
+    signal gameOver(bool status)
 
     GridView {
         id: _view
@@ -17,6 +18,7 @@ Rectangle {
 
         model: GameCxxModel {
             id: _model
+            onGameOver: _root.gameOver(isSuccess)
         }
 
         cellWidth: width / _model.dimension

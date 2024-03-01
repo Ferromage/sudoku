@@ -1,7 +1,7 @@
 import QtQuick 2.15
 
 Rectangle {
-    id: _tile
+    id: _cell
 
     property alias text: _text.text
     property alias textColor: _text.color
