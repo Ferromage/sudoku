@@ -8,6 +8,8 @@ Rectangle {
         _model.startNewGame(level)
     }
 
+    property alias isGameInProgress: _model.isGameInProgress
+
     GridView {
         id: _view
         focus: true

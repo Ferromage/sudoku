@@ -4,7 +4,9 @@ import QtQuick.Layouts 1.15
 
 RowLayout {
     id: _root
+
     signal newGame(int level)
+    property alias level: _cmbbox.currentIndex
 
     spacing: 10
     Layout.alignment: Qt.AlignRight

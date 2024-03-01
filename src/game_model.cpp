@@ -64,6 +64,10 @@ int GameModel::position() const {
     return m_currentPosition ? m_currentPosition.value() : -1;
 }
 
+bool GameModel::isGameInProgress() const {
+    return m_state == State::GameInProgress;
+}
+
 Q_INVOKABLE void GameModel::setPosition(int position) {
     if (m_state == State::Idle) {
         return;
@@ -130,7 +134,7 @@ Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
 
 Q_INVOKABLE void GameModel::startNewGame(int level) {
     beginResetModel();
-    m_state = State::Game;
+    m_state = State::GameInProgress;
     m_data.reset();
     m_data.shuffle(static_cast<DifficultLevel>(level % 3));
     endResetModel();

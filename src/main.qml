@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Dialogs 1.3
 
 Window {
     id: _root
@@ -28,7 +28,23 @@ Window {
 
         ControlPanel {
             id: _control
-            onNewGame: _board.startNewGame(level)
+            onNewGame: {
+                if (_board.isGameInProgress) {
+                    _dialog.text = "Вы действительно хотите закончить<br>текущую игру и начать новую?"
+                } else {
+                    _dialog.text = "Начать новую игру?"
+                }
+                _dialog.visible = true
+            }
         }
+    }
+
+    MessageDialog {
+        id: _dialog
+        visible: false
+        modality: Qt.WindowModal
+        title: "Start new game"
+        standardButtons: StandardButton.No | StandardButton.Yes
+        onYes: _board.startNewGame(_control.level)
     }
 }

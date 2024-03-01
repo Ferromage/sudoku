@@ -10,6 +10,7 @@ class GameModel : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY(int dimension READ dimension CONSTANT)
     Q_PROPERTY(int position READ position NOTIFY positionChanged)
+    Q_PROPERTY(bool isGameInProgress READ isGameInProgress)
 
 public:
     explicit GameModel(QObject *parent = nullptr);
@@ -19,8 +20,9 @@ public:
     QHash<int,QByteArray> roleNames() const override;
 
     int dimension() const;
-
     int position() const;
+    bool isGameInProgress() const;
+
     Q_INVOKABLE void setPosition(int position);
     Q_INVOKABLE void handleKey(Qt::Key key);
     Q_INVOKABLE void startNewGame(int level); //level: 0..2
@@ -29,7 +31,7 @@ signals:
     void positionChanged();
 
 private:
-    enum class State {Idle, Game, GameOver};
+    enum class State {Idle, GameInProgress, GameOver};
 
     std::pair<size_t, size_t> convertPositionToMatrixCoordinates(int position) const;
 
