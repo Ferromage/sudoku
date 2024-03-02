@@ -7,8 +7,27 @@ Window {
     id: _root
     width: 600
     height: 600
+    minimumWidth: 550
+    minimumHeight: 550
+
     visible: true
     title: "Sudoku"    
+
+    function secondsToString(seconds) {
+        var ss = Math.floor(seconds % 60)
+        var mm = Math.floor((seconds / 60) % 60)
+        var hh = Math.floor(seconds / 3600)
+        if (ss < 10) {
+            ss = "0" + ss.toLocaleString()
+        }
+        if (mm < 10) {
+            mm = "0" + mm.toLocaleString()
+        }
+        if (hh < 10) {
+            hh = "0" + hh.toLocaleString()
+        }
+        return hh + ":" + mm + ":" + ss
+    }
 
     ColumnLayout {
         spacing: 20
@@ -27,11 +46,15 @@ Window {
 
             onGameOver: {
                 if (status) {
-                    _dialogGameOver.text = "Вы выиграли! Ваш результат: "
+                    _dialogGameOver.text = "Вы выиграли! Ваш результат: " + _root.secondsToString(seconds)
                 } else {
                     _dialogGameOver.text = "Вы проиграли"
                 }
                 _dialogGameOver.visible = true
+            }
+
+            onCurrentTime: {
+                _control.time = _root.secondsToString(seconds)
             }
         }
 
@@ -44,7 +67,7 @@ Window {
                     _dialogNewGame.text = "Начать новую игру?"
                 }
                 _dialogNewGame.visible = true
-            }            
+            }
         }
     }
 

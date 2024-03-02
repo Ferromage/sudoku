@@ -7,9 +7,23 @@ RowLayout {
 
     signal newGame(int level)
     property alias level: _cmbbox.currentIndex
+    property alias time: _label.text
 
     spacing: 10
-    Layout.alignment: Qt.AlignRight
+
+    Label {
+        id: _label
+        text: "00:00:00"
+        font.pointSize: 13
+        Layout.alignment: Qt.AlignLeft
+    }
+
+    Rectangle {
+        color: "transparent"
+        height: 1
+        Layout.fillWidth: true
+        Layout.minimumWidth: 5
+    }
 
     Button {
         id: _button

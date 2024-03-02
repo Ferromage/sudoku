@@ -3,6 +3,7 @@
 #include "matrix.h"
 #include <QObject>
 #include <QAbstractListModel>
+#include <QTimer>
 #include <vector>
 #include <optional>
 
@@ -29,7 +30,8 @@ public:
 
 signals:
     void positionChanged();
-    void gameOver(bool isSuccess);
+    void gameOver(bool isSuccess, int totalSeconds);
+    void currentTime(int elapsedSeconds);
 
 private:
     enum class State {Idle, GameInProgress, GameOver};
@@ -44,4 +46,6 @@ private:
     std::optional<int> m_currentPosition;
     Matrix m_data;
     State m_state;
+    QTimer *m_timer;
+    int m_elapsedSeconds;
 };

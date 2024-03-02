@@ -6,6 +6,15 @@
 
 GameModel::GameModel(QObject *parent) : QAbstractListModel(parent) {
     m_state = State::Idle;
+    m_elapsedSeconds = 0;
+    m_timer = new QTimer(this);
+    m_timer->setTimerType(Qt::PreciseTimer);
+
+    QObject::connect(m_timer, &QTimer::timeout, [this] {
+        if (m_state == State::GameInProgress) {
+            emit currentTime(++m_elapsedSeconds);
+        }
+    });
 }
 
 int GameModel::rowCount(const QModelIndex&) const {
@@ -123,7 +132,7 @@ Q_INVOKABLE void GameModel::handleKey(Qt::Key key) {
 
             if (m_state == State::GameOver) {
                 emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
-                emit gameOver(m_data.isValid());
+                emit gameOver(m_data.isValid(), m_elapsedSeconds);
             } else {
                 emit dataChanged(createIndex(m_currentPosition.value(), 0), createIndex(m_currentPosition.value(), 0));
             }
@@ -138,6 +147,10 @@ Q_INVOKABLE void GameModel::startNewGame(int level) {
     m_data.reset();
     m_data.shuffle(static_cast<DifficultLevel>(level % 3));
     endResetModel();
+
+    m_elapsedSeconds = 0;
+    emit currentTime(m_elapsedSeconds);
+    m_timer->start(1000);
 }
 
 std::pair<size_t, size_t> GameModel::convertPositionToMatrixCoordinates(int position) const {
@@ -146,3 +159,4 @@ std::pair<size_t, size_t> GameModel::convertPositionToMatrixCoordinates(int posi
     result.second = position % m_data.rows(); //column
     return result;
 }
+
