@@ -77,7 +77,10 @@ Window {
         modality: Qt.WindowModal
         title: "Начать новую игру"
         standardButtons: StandardButton.No | StandardButton.Yes
-        onYes: _board.startNewGame(_control.level)
+        onYes: {
+            _board.startNewGame(_control.level)
+            _board.focus = true
+        }
     }
 
     MessageDialog {

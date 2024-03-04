@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import game_cxx_model 1.0
 
-Rectangle {
+Item {
     id: _root
 
     function startNewGame(level) {
@@ -11,6 +11,12 @@ Rectangle {
     property alias isGameInProgress: _model.isGameInProgress
     signal gameOver(bool status, int seconds)
     signal currentTime(int seconds)
+
+    onFocusChanged: {
+        if (focus) {
+            _view.focus = true
+        }
+    }
 
     GridView {
         id: _view
@@ -26,7 +32,11 @@ Rectangle {
         cellWidth: width / _model.dimension
         cellHeight: height / _model.dimension
 
-        Keys.onPressed: _model.handleKey(event.key)
+        Keys.onPressed: {
+            if (event.key !== Qt.Key_Tab) {
+                _model.handleKey(event.key)
+            }
+        }
 
         delegate: Item {
             width: _view.cellWidth

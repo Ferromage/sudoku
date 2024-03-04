@@ -6,6 +6,7 @@ RowLayout {
     id: _root
 
     signal newGame(int level)
+
     property alias level: _cmbbox.currentIndex
     property alias time: _label.text
 
@@ -30,13 +31,13 @@ RowLayout {
         text: "New game"
         font.pointSize: 13
         onClicked: _root.newGame(_cmbbox.currentIndex)
-        focusPolicy: Qt.NoFocus
+        KeyNavigation.tab: _cmbbox
     }
 
     ComboBox {
         id: _cmbbox
         font.pointSize: 13
         model: ["Easy", "Normal", "Hard"]
-        focusPolicy: Qt.NoFocus
+        KeyNavigation.tab: _board
     }
 }
