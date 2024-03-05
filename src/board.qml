@@ -7,10 +7,18 @@ Item {
     function startNewGame(level) {
         _model.startNewGame(level)
     }
+    function saveGame() {
+        _model.saveGame()
+    }
+    function loadGame() {
+        _model.loadGame()
+    }
 
     property alias isGameInProgress: _model.isGameInProgress
     signal gameOver(bool status, int seconds)
     signal currentTime(int seconds)
+    signal gameWasSaved(bool status)
+    signal gameLoadError()
 
     onFocusChanged: {
         if (focus) {
@@ -27,6 +35,8 @@ Item {
             id: _model
             onGameOver: _root.gameOver(isSuccess, totalSeconds)
             onCurrentTime: _root.currentTime(elapsedSeconds)
+            onGameWasSaved: _root.gameWasSaved(isSuccess)
+            onGameLoadError: _root.gameLoadError()
         }
 
         cellWidth: width / _model.dimension
@@ -61,6 +71,7 @@ Item {
                     anchors.fill: parent
                     onPressed: {
                         _model.setPosition(index);
+                        _view.focus = true
                     }
                 }
             }

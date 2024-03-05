@@ -153,6 +153,30 @@ Q_INVOKABLE void GameModel::startNewGame(int level) {
     m_timer->start(1000);
 }
 
+Q_INVOKABLE void GameModel::saveGame() {
+    if (m_state == State::GameInProgress) {
+        const auto status = MatrixStorage::saveMatrix(m_data, m_elapsedSeconds);
+        emit gameWasSaved(status);
+    }
+}
+
+Q_INVOKABLE void GameModel::loadGame() {
+    Matrix matrix;
+    int seconds;
+    if (MatrixStorage::loadMatrix(matrix, seconds)) {
+        beginResetModel();
+        m_currentPosition.reset();
+        m_state = State::GameInProgress;
+        std::swap(matrix, m_data);
+        m_elapsedSeconds = seconds;
+        emit currentTime(m_elapsedSeconds);
+        m_timer->start(1000);
+        endResetModel();
+    } else {
+        emit gameLoadError();
+    }
+}
+
 std::pair<size_t, size_t> GameModel::convertPositionToMatrixCoordinates(int position) const {
     std::pair<size_t, size_t> result;
     result.first = position / m_data.columns(); //row

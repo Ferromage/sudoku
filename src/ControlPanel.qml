@@ -6,9 +6,12 @@ RowLayout {
     id: _root
 
     signal newGame(int level)
+    signal saveGame()
+    signal loadGame()
 
     property alias level: _cmbbox.currentIndex
     property alias time: _label.text
+    property alias saveEnabled: _buttonSaveGame.enabled
 
     spacing: 10
 
@@ -27,17 +30,38 @@ RowLayout {
     }
 
     Button {
-        id: _button
+        id: _buttonNewGame
         text: "New game"
         font.pointSize: 13
         onClicked: _root.newGame(_cmbbox.currentIndex)
         KeyNavigation.tab: _cmbbox
+        Layout.preferredWidth: 110        
     }
 
     ComboBox {
         id: _cmbbox
         font.pointSize: 13
         model: ["Easy", "Normal", "Hard"]
+        KeyNavigation.tab: _buttonSaveGame
+        Layout.preferredWidth: 110
+    }
+
+    Button {
+        id: _buttonSaveGame
+        text: "Save"
+        font.pointSize: 13
+        onClicked: _root.saveGame()
+        KeyNavigation.tab: _buttonLoadGame
+        Layout.preferredWidth: 110
+        enabled: false
+    }
+
+    Button {
+        id: _buttonLoadGame
+        text: "Load"
+        font.pointSize: 13
+        onClicked: _root.loadGame()
         KeyNavigation.tab: _board
+        Layout.preferredWidth: 110
     }
 }

@@ -40,3 +40,19 @@ void MatrixItem::setGeneratedValue(int value) {
 void MatrixItem::setHiddenState() {
     m_state = State::Hidden;
 }
+
+std::ostream& operator<< (std::ostream& oss, const MatrixItem& item) {
+    oss << item.m_generatedValue << item.m_userValue << static_cast<int>(item.m_state);
+    return oss;
+}
+
+std::istream& operator>> (std::istream& iss, MatrixItem& item) {
+    int num;
+    iss >> num;
+
+    item.m_generatedValue = num / 100;
+    item.m_userValue = (num % 100) / 10;
+    item.m_state = static_cast<MatrixItem::State>(num % 10);
+
+    return iss;
+}

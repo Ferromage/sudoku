@@ -1,6 +1,7 @@
 #pragma once
 
 #include "matrix.h"
+#include "matrix_storage.h"
 #include <QObject>
 #include <QAbstractListModel>
 #include <QTimer>
@@ -27,11 +28,15 @@ public:
     Q_INVOKABLE void setPosition(int position);
     Q_INVOKABLE void handleKey(Qt::Key key);
     Q_INVOKABLE void startNewGame(int level); //level: 0..2
+    Q_INVOKABLE void saveGame();
+    Q_INVOKABLE void loadGame();
 
 signals:
     void positionChanged();
     void gameOver(bool isSuccess, int totalSeconds);
     void currentTime(int elapsedSeconds);
+    void gameWasSaved(bool isSuccess);
+    void gameLoadError();
 
 private:
     enum class State {Idle, GameInProgress, GameOver};

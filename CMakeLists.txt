@@ -26,6 +26,9 @@ add_executable(
     src/matrix_shuffler.cpp
     src/matrix_shuffler.h
 
+    src/matrix_storage.h
+    src/matrix_storage.cpp
+
     src/matrix_item.cpp
     src/matrix_item.h
 

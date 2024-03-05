@@ -7,8 +7,8 @@ Window {
     id: _root
     width: 600
     height: 600
-    minimumWidth: 550
-    minimumHeight: 550
+    minimumWidth: 600
+    minimumHeight: 600
 
     visible: true
     title: "Sudoku"    
@@ -46,20 +46,35 @@ Window {
 
             onGameOver: {
                 if (status) {
-                    _dialogGameOver.text = "Вы выиграли! Ваш результат: " + _root.secondsToString(seconds)
+                    _dialogInfo.text = "Вы выиграли! Ваш результат: " + _root.secondsToString(seconds)
                 } else {
-                    _dialogGameOver.text = "Вы проиграли"
+                    _dialogInfo.text = "Вы проиграли"
                 }
-                _dialogGameOver.visible = true
+                _dialogInfo.title = "Игра окончена"
+                _dialogInfo.visible = true
+                _control.saveEnabled = false
             }
 
             onCurrentTime: {
                 _control.time = _root.secondsToString(seconds)
             }
+
+            onGameWasSaved: {
+                _dialogInfo.text = status ? "Игра сохранена" : "Не удалось сохранить игру"
+                _dialogInfo.title = "Сохранение"
+                _dialogInfo.visible = true
+            }
+
+            onGameLoadError: {
+                _dialogInfo.text = "Не удалось загрузить игру"
+                _dialogInfo.title = "Загрузка"
+                _dialogInfo.visible = true
+            }
         }
 
         ControlPanel {
             id: _control
+
             onNewGame: {
                 if (_board.isGameInProgress) {
                     _dialogNewGame.text = "Вы действительно хотите закончить<br>текущую игру и начать новую?"
@@ -67,6 +82,19 @@ Window {
                     _dialogNewGame.text = "Начать новую игру?"
                 }
                 _dialogNewGame.visible = true
+            }
+
+            onSaveGame: {
+                _board.saveGame()
+            }
+
+            onLoadGame: {
+                if (_board.isGameInProgress) {
+                    _dialogLoadGame.text = "Вы действительно хотите закончить<br>текущую игру и загрузить предыдущую?"
+                } else {
+                    _dialogLoadGame.text = "Загрузить предыдущую игру?"
+                }
+                _dialogLoadGame.visible = true
             }
         }
     }
@@ -80,14 +108,33 @@ Window {
         onYes: {
             _board.startNewGame(_control.level)
             _board.focus = true
+            _control.saveEnabled = true
         }
     }
 
     MessageDialog {
-        id: _dialogGameOver
+        id: _dialogLoadGame
         visible: false
         modality: Qt.WindowModal
-        title: "Игра окончена"
+        title: "Загрузить предыдущую игру"
+        standardButtons: StandardButton.No | StandardButton.Yes
+        onYes: {
+            _board.loadGame()
+            _board.focus = true
+            _control.saveEnabled = true
+        }
+        onNo: {
+            _board.focus = true
+        }
+    }
+
+    MessageDialog {
+        id: _dialogInfo
+        visible: false
+        modality: Qt.WindowModal        
         standardButtons: StandardButton.Ok
+        onAccepted: {
+            _board.focus = true
+        }
     }
 }
