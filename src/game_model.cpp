@@ -66,7 +66,7 @@ QHash<int,QByteArray> GameModel::roleNames() const {
 
 int GameModel::dimension() const {
     assert(m_data.columns() == m_data.rows());
-    return m_data.columns();
+    return static_cast<int>(m_data.columns());
 }
 
 int GameModel::position() const {

@@ -30,6 +30,16 @@ bool MatrixItem::isGuessed() const {
     return false;
 }
 
+bool MatrixItem::operator== (const MatrixItem& rhs) const {
+    return  m_generatedValue == rhs.m_generatedValue &&
+            m_userValue == rhs.m_userValue &&
+            m_state == rhs.m_state;
+}
+
+bool MatrixItem::operator!= (const MatrixItem& rhs) const {
+    return !(*this == rhs);
+}
+
 void MatrixItem::setGeneratedValue(int value) {
     if (1 <= value && value <= 9) {
         m_generatedValue = value;

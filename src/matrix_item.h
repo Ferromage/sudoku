@@ -16,6 +16,8 @@ public:
     int value() const;
     State state() const;
     bool isGuessed() const;
+    bool operator== (const MatrixItem& rhs) const;
+    bool operator!= (const MatrixItem& rhs) const;
 
 private:
     void setGeneratedValue(int value);

@@ -101,6 +101,22 @@ void Matrix::shuffle(DifficultLevel level) {
     m_shuffler.shuffleAttributes(*this, level);
 }
 
+
+bool Matrix::operator== (const Matrix& rhs) const {
+    for (size_t row = 0; row < rows(); row++) {
+        for (size_t col = 0; col < columns(); col++) {
+            if (m_data[row][col] != rhs.m_data[row][col]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Matrix::operator!= (const Matrix& rhs) const {
+    return !(*this == rhs);
+}
+
 bool Matrix::isFilledByUser() const {
     for (size_t row = 0; row < rows(); row++) {
         for (size_t col = 0; col < columns(); col++) {

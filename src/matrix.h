@@ -28,6 +28,9 @@ public:
     void reset();
     void shuffle(DifficultLevel level);
 
+    bool operator== (const Matrix& rhs) const;
+    bool operator!= (const Matrix& rhs) const;
+
 private:
     using Line = std::array<MatrixItem, SIZE>;
     

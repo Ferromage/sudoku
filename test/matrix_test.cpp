@@ -60,3 +60,22 @@ TEST(MatrixTest, SetGet) {
     res = matrix.getItem(matrix.rows() - 1, matrix.columns() - 1);
     ASSERT_EQ(res.value(), 5);
 }
+
+TEST(MatrixTest, Equaity) {
+    {
+        Matrix matrix1;
+        Matrix matrix2;
+        ASSERT_EQ(matrix1, matrix2);
+    }
+
+    {
+        Matrix matrix1;
+        Matrix matrix2;
+
+        MatrixItem item;
+        item.setUserValue(7);
+        matrix2.setItem(0, 0, item);
+
+        ASSERT_NE(matrix1, matrix2);
+    }
+}
