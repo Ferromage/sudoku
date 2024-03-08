@@ -57,6 +57,7 @@ Window {
 
             onCurrentTime: {
                 _control.time = _root.secondsToString(seconds)
+                _control.saveEnabled = isGameInProgress
             }
 
             onGameWasSaved: {
@@ -108,7 +109,6 @@ Window {
         onYes: {
             _board.startNewGame(_control.level)
             _board.focus = true
-            _control.saveEnabled = true
         }
     }
 
@@ -121,7 +121,6 @@ Window {
         onYes: {
             _board.loadGame()
             _board.focus = true
-            _control.saveEnabled = true
         }
         onNo: {
             _board.focus = true
