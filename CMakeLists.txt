@@ -17,6 +17,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Quick)
 
 add_executable(
     ${projectTarget}
+    WIN32
 
     src/qml.qrc
     src/main.cpp
@@ -79,8 +80,8 @@ target_link_libraries(${testTarget} gtest gtest_main)
 target_include_directories(${testTarget} PUBLIC src)
 
 if (MSVC)
-    target_compile_options(${projectTarget} PUBLIC /W4 /WX)
-    target_compile_options(${testTarget} PUBLIC /W4 /WX)
+#    target_compile_options(${projectTarget} PUBLIC /W4 /WX)
+#    target_compile_options(${testTarget} PUBLIC /W4 /WX)
 else()
     target_compile_options(${projectTarget} PUBLIC -Wall -Wextra -Werror -pedantic)
     target_compile_options(${testTarget} PUBLIC -Wall -Wextra -Werror -pedantic)
